@@ -1,51 +1,27 @@
-import { gql, useQuery } from "@apollo/client";
 import "./App.css";
 import { Button } from "antd";
-
-const GET_EMPLOYEES = gql`
-  query GetEmployees {
-    employees {
-      __typename
-      ...EmployeeDetails
-    }
-  }
-
-  fragment EmployeeDetails on Employee {
-    ... on IEmployee {
-      id
-      name
-      department
-      status
-    }
-    ... on FullTimeEmployeeType {
-      id
-      name
-      department
-      status
-      salary
-      type
-    }
-    ... on PartTimeEmployeeType {
-      id
-      name
-      department
-      status
-      hourlyRate
-      type
-    }
-  }
-`;
+import { useGetEmployeesQuery } from "./gql/apolloGenerated";
 
 function App() {
-  const { loading, error, data } = useQuery(GET_EMPLOYEES);
-  console.log(data);
+  const { loading, error, data } = useGetEmployeesQuery();
+  console.log(data?.employees);
+
+  if (error) {
+    return <h1>Some Error</h1>;
+  }
 
   return (
     <>
-      <h1 className="text-3xl font-bold underline bg-red-700 text-blue-600">
-        Hello world!
-      </h1>
-      <Button type="primary">Button</Button>
+      {loading ? (
+        <h1>loading....</h1>
+      ) : (
+        <>
+          <h1 className="text-3xl font-bold underline bg-red-700 text-blue-600">
+            Hello world!
+          </h1>
+          <Button type="primary">Button</Button>{" "}
+        </>
+      )}
     </>
   );
 }

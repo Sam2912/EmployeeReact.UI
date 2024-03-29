@@ -1,0 +1,31 @@
+query GetEmployees {
+  employees {
+    __typename
+    ...EmployeeDetails
+  }
+}
+
+fragment EmployeeDetails on Employee {
+  ... on IEmployee {
+    id
+    name
+    department
+    status
+  }
+  ... on FullTimeEmployeeType {
+    id
+    name
+    department
+    status
+    salary
+    type
+  }
+  ... on PartTimeEmployeeType {
+    id
+    name
+    department
+    status
+    hourlyRate
+    type
+  }
+}
