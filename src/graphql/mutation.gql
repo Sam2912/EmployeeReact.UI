@@ -1,0 +1,5 @@
+mutation AddEmployee($create: EmployeeInput!) {
+  addEmployee(create: $create) {
+    ...EmployeeDetails
+  }
+}

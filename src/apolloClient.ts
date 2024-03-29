@@ -1,7 +1,8 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
+import graphqlSchema from '../constants';
 
 const client = new ApolloClient({
-  uri: "http://localhost:5018/graphql",
+  uri: graphqlSchema,
   cache: new InMemoryCache({
     possibleTypes: {
       Employee: [
