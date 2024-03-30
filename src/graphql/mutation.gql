@@ -3,3 +3,15 @@ mutation AddEmployee($create: EmployeeInput!) {
     ...EmployeeDetails
   }
 }
+
+mutation UpdateEmployee($update: EmployeeUpdateInput!) {
+  updateEmployee(update: $update) {
+    ...EmployeeDetails
+  }
+}
+
+mutation DeleteEmployee($delete: EmployeeDeleteInput!) {
+  deleteEmployee(delete: $delete) {
+    ...EmployeeDetails
+  }
+}

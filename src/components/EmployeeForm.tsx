@@ -4,15 +4,17 @@ import {
   Department,
   Status,
   EmployeeTypeEnum,
-  FullTimeEmployeeInput,
-  PartTimeEmployeeInput,
+  FullTimeEmployeeType,
+  PartTimeEmployeeType,
 } from "../gql/apolloGenerated"; // Assuming enums are defined in a separate file
 
 interface EmployeeFormProps {
+  initialValues?: FullTimeEmployeeType | PartTimeEmployeeType;
   onFinish: (
-    form: FormInstance<FullTimeEmployeeInput | PartTimeEmployeeInput>,
-    values: FullTimeEmployeeInput | PartTimeEmployeeInput
+    form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>,
+    values: FullTimeEmployeeType | PartTimeEmployeeType
   ) => void;
+  onDelete?: (id: string) => void; // onDelete callback with employee ID
 }
 
 interface EmployeeTypeOptions {
@@ -24,8 +26,12 @@ const employeeTypeOptions: EmployeeTypeOptions = {
   [EmployeeTypeEnum.PartTime]: "Part Time",
 };
 
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
-  const [form] = Form.useForm<FullTimeEmployeeInput | PartTimeEmployeeInput>();
+const EmployeeForm: React.FC<EmployeeFormProps> = ({
+  onFinish,
+  initialValues,
+  onDelete,
+}) => {
+  const [form] = Form.useForm<FullTimeEmployeeType | PartTimeEmployeeType>();
 
   const onFinishFailed = (errorInfo: any) => {
     //console.log("Failed:", errorInfo);
@@ -46,15 +52,25 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
     form.setFieldsValue({ hourlyRate: undefined, salary: undefined }); // Reset the fields when the type changes
   };
 
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(initialValues?.id); // Pass the employee ID to onDelete callback
+    }
+  };
+
   return (
     <Form
       form={form}
       name="employee_form"
+      initialValues={initialValues}
       onFinish={handleSubmit}
       onFinishFailed={onFinishFailed}
       layout="vertical"
       className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md"
     >
+      <Form.Item name="id" hidden>
+        <Input type="hidden" />
+      </Form.Item>
       <Form.Item
         label="Employee Type"
         name="type"
@@ -64,7 +80,11 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
         ]}
         className="mb-4"
       >
-        <Select onChange={handleEmployeeTypeChange} className="w-full">
+        <Select
+          onChange={handleEmployeeTypeChange}
+          className="w-full"
+          disabled={!!initialValues?.id}
+        >
           {Object.keys(employeeTypeOptions).map((key) => (
             <Select.Option key={key} value={key}>
               {employeeTypeOptions[key]}
@@ -157,9 +177,14 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
         </Select>
       </Form.Item>
       <Form.Item className="mt-6">
-        <Button type="primary" onClick={handleSubmit} className="w-full">
-          Submit
+        <Button type="primary" onClick={handleSubmit}>
+          Save
         </Button>
+        {onDelete && (
+          <Button type="primary" danger onClick={handleDelete} className="ml-4">
+            Delete
+          </Button>
+        )}
       </Form.Item>
     </Form>
   );

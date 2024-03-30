@@ -1,11 +1,14 @@
 import React from "react";
 import { FormInstance } from "antd/es/form";
 import {
-  FullTimeEmployeeInput,
-  PartTimeEmployeeInput,
+  FullTimeEmployeeType,
+  PartTimeEmployeeType,
   Type,
   useAddEmployeeMutation,
   AddEmployeeMutationFn,
+  FullTimeEmployeeInput,
+  EmployeeTypeEnum,
+  PartTimeEmployeeInput,
 } from "../gql/apolloGenerated";
 import EmployeeForm from "./EmployeeForm";
 import { v4 } from "uuid";
@@ -20,7 +23,7 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
     useAddEmployeeMutation();
 
   const handleCompleted =
-    (form: FormInstance<FullTimeEmployeeInput | PartTimeEmployeeInput>) =>
+    (form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>) =>
     (data: AddEmployeeMutationFn["addEmployee"]): void => {
       message.success("Employee saved successfully!");
       form.resetFields();
@@ -29,7 +32,7 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
     };
 
   const handleError =
-    (form: FormInstance<FullTimeEmployeeInput | PartTimeEmployeeInput>) =>
+    (form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>) =>
     (
       error: any // You can use a more specific type for error handling
     ): void => {
@@ -45,27 +48,41 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
     };
 
   const onFinish = (
-    form: FormInstance<FullTimeEmployeeInput | PartTimeEmployeeInput>,
-    values: FullTimeEmployeeInput | PartTimeEmployeeInput
+    form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>,
+    values: FullTimeEmployeeType | PartTimeEmployeeType
   ): void => {
     values.id = values.id ?? v4();
     switch (values.type) {
-      case Type.FullTime:
+      case EmployeeTypeEnum.FullTime:
         addEmployeeMutation({
           variables: {
             create: {
-              fullTimeEmployeeInput: values,
+              fullTimeEmployeeInput: {
+                id: values.id,
+                name: values.name,
+                type: Type.FullTime,
+                department: values.department,
+                status: values.status,
+                salary: (values as FullTimeEmployeeType).salary,
+              } as FullTimeEmployeeInput,
             },
           },
           onCompleted: handleCompleted(form),
           onError: handleError(form),
         });
         break;
-      case Type.PartTime:
+      case EmployeeTypeEnum.PartTime:
         addEmployeeMutation({
           variables: {
             create: {
-              partTimeEmployeeInput: values,
+              partTimeEmployeeInput: {
+                id: values.id,
+                name: values.name,
+                type: Type.PartTime,
+                department: values.department,
+                status: values.status,
+                hourlyRate: (values as PartTimeEmployeeType).hourlyRate,
+              } as PartTimeEmployeeInput,
             },
           },
           onCompleted: handleCompleted(form),
