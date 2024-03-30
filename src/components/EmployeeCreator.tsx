@@ -1,35 +1,77 @@
-import { useAddEmployeeMutation } from "../gql/apolloGenerated";
-import EmployeeForm, { EmployeeData } from "./EmployeeForm";
+import form, { FormInstance } from "antd/es/form";
+import {
+  FullTimeEmployeeInput,
+  PartTimeEmployeeInput,
+  Type,
+  useAddEmployeeMutation,
+} from "../gql/apolloGenerated";
+import EmployeeForm from "./EmployeeForm";
 import { v4 } from "uuid";
+import { message } from "antd";
 
-interface EmployeeCreatorProps{}
+interface EmployeeCreatorProps {}
 
 const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
   //const { loading, error, data } = useGetEmployeesQuery();
   const [addEmployeeMutation, { loading, error }] = useAddEmployeeMutation();
 
-  if (error) {
-    return <h1>Some Error</h1>;
-  }
-  const onFinish = (values: EmployeeData): void => {
+  const onFinish = (
+    form: FormInstance<FullTimeEmployeeInput | PartTimeEmployeeInput>,
+    values: FullTimeEmployeeInput | PartTimeEmployeeInput
+  ): void => {
     values.id = values.id ?? v4();
-    addEmployeeMutation({
-      variables: {
-        create: {
-          //partTimeEmployeeInput: values
-          // {
-          //   id: 7,
-          //   name: "Seema",
-          //   department: Department.It,
-          //   hourlyRate: 7000,
-          //   status: Status.Active,
-          //   type: Type.PartTime,
-          // },
-        },
-      },
-      onCompleted: (data) => console.log(data),
-      onError: (error) => console.log(error),
-    });
+    switch (values.type) {
+      case Type.FullTime:
+        addEmployeeMutation({
+          variables: {
+            create: {
+              fullTimeEmployeeInput: values,
+            },
+          },
+          onCompleted: (data) => {
+            message.success("Employee saved successfully!");
+            form.resetFields();
+          },
+          onError: (error) => {
+            // Display GraphQL errors
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+              const errorMessages = error.graphQLErrors.map(
+                (graphQLError) => graphQLError.message
+              );
+              message.error(`GraphQL Error: ${errorMessages.join(", ")}`);
+            } else {
+              message.error("An error occurred while saving the employee.");
+            }
+          },
+        });
+        break;
+      case Type.PartTime:
+        addEmployeeMutation({
+          variables: {
+            create: {
+              partTimeEmployeeInput: values,
+            },
+          },
+          onCompleted: (data) => {
+            message.success("Employee saved successfully!");
+            form.resetFields();
+          },
+          onError: (error) => {
+            // Display GraphQL errors
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+              const errorMessages = error.graphQLErrors.map(
+                (graphQLError) => graphQLError.message
+              );
+              message.error(`GraphQL Error: ${errorMessages.join(", ")}`);
+            } else {
+              message.error("An error occurred while saving the employee.");
+            }
+          },
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -37,6 +79,6 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
       <EmployeeForm onFinish={onFinish}></EmployeeForm>
     </>
   );
-}
+};
 
 export default EmployeeCreator;

@@ -1,6 +1,12 @@
 import React from "react";
-import { Form, Input, Button, Select, InputNumber } from "antd";
-import { Department, Status, EmployeeTypeEnum } from "../gql/apolloGenerated"; // Assuming enums are defined in a separate file
+import { Form, Input, Button, Select, InputNumber, FormInstance } from "antd";
+import {
+  Department,
+  Status,
+  EmployeeTypeEnum,
+  FullTimeEmployeeInput,
+  PartTimeEmployeeInput,
+} from "../gql/apolloGenerated"; // Assuming enums are defined in a separate file
 
 export interface EmployeeData {
   id?: string; // Optional since it might not be present in the form
@@ -13,7 +19,10 @@ export interface EmployeeData {
 }
 
 interface EmployeeFormProps {
-  onFinish: (values: EmployeeData) => void;
+  onFinish: (
+    form: FormInstance<FullTimeEmployeeInput | PartTimeEmployeeInput>,
+    values: FullTimeEmployeeInput | PartTimeEmployeeInput
+  ) => void;
 }
 
 interface EmployeeTypeOptions {
@@ -26,7 +35,7 @@ export const employeeTypeOptions: EmployeeTypeOptions = {
 };
 
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
-  const [form] = Form.useForm<EmployeeData>();
+  const [form] = Form.useForm<FullTimeEmployeeInput | PartTimeEmployeeInput>();
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
@@ -36,7 +45,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
     form
       .validateFields()
       .then((values) => {
-         onFinish(values);
+        onFinish(form, values);
       })
       .catch((errorInfo) => {
         console.log("Validation failed:", errorInfo);
