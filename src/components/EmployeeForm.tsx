@@ -8,16 +8,6 @@ import {
   PartTimeEmployeeInput,
 } from "../gql/apolloGenerated"; // Assuming enums are defined in a separate file
 
-export interface EmployeeData {
-  id?: string; // Optional since it might not be present in the form
-  name: string;
-  department: Department;
-  hourlyRate?: number; // Optional for PartTime employees
-  salary?: number; // Optional for FullTime employees
-  status: Status;
-  type: EmployeeTypeEnum;
-}
-
 interface EmployeeFormProps {
   onFinish: (
     form: FormInstance<FullTimeEmployeeInput | PartTimeEmployeeInput>,
@@ -29,7 +19,7 @@ interface EmployeeTypeOptions {
   [key: string]: string;
 }
 
-export const employeeTypeOptions: EmployeeTypeOptions = {
+const employeeTypeOptions: EmployeeTypeOptions = {
   [EmployeeTypeEnum.FullTime]: "Full Time",
   [EmployeeTypeEnum.PartTime]: "Part Time",
 };
@@ -38,7 +28,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
   const [form] = Form.useForm<FullTimeEmployeeInput | PartTimeEmployeeInput>();
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+    //console.log("Failed:", errorInfo);
   };
 
   const handleSubmit = () => {
@@ -48,7 +38,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ onFinish }) => {
         onFinish(form, values);
       })
       .catch((errorInfo) => {
-        console.log("Validation failed:", errorInfo);
+        //console.log("Validation failed:", errorInfo);
       });
   };
 
