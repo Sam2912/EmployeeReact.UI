@@ -10,10 +10,12 @@ import {
 import EmployeeForm from "./EmployeeForm";
 import { v4 } from "uuid";
 import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 interface EmployeeCreatorProps {}
 
 const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
+  const navigate = useNavigate();
   const [addEmployeeMutation, { data, loading, error }] =
     useAddEmployeeMutation();
 
@@ -23,6 +25,7 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
       message.success("Employee saved successfully!");
       form.resetFields();
       console.log(data);
+      navigate(`/`);
     };
 
   const handleError =

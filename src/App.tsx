@@ -1,10 +1,13 @@
 import "./App.css";
-import EmployeeCreator from "./components/EmployeeCreator";
+import AppLayout from "./components/AppLayout";
+import { BrowserRouter as Router } from "react-router-dom";
 
 function App() {
   return (
     <>
-     <EmployeeCreator></EmployeeCreator>
+      <Router>
+        <AppLayout />
+      </Router>
     </>
   );
 }
