@@ -55,6 +55,10 @@ const AppLayout = () => {
           position: "fixed",
           bottom: 0,
           width: "100%",
+          background: "#001529", // Dark background color
+          color: "white", // Text color
+          padding: "8px 16px", // Adjust padding here
+          fontSize: "14px", // Adjust font size here
         }}
       >
         Employee Management System
