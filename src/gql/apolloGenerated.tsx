@@ -16,6 +16,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   Decimal: { input: any; output: any; }
+  Guid: { input: any; output: any; }
 };
 
 export enum Department {
@@ -29,7 +30,7 @@ export enum Department {
 export type Employee = FullTimeEmployeeType | PartTimeEmployeeType;
 
 export type EmployeeDeleteInput = {
-  employeeId?: InputMaybe<Scalars['Int']['input']>;
+  employeeId?: InputMaybe<Scalars['Guid']['input']>;
 };
 
 export type EmployeeInput = {
@@ -69,7 +70,7 @@ export type EmployeeQuery = {
 
 
 export type EmployeeQueryEmployeeArgs = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['Guid']['input'];
 };
 
 
@@ -90,7 +91,7 @@ export type EmployeeUpdateInput = {
 
 export type FullTimeEmployeeInput = {
   department: Department;
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['Guid']['input']>;
   name: Scalars['String']['input'];
   salary?: InputMaybe<Scalars['Float']['input']>;
   status: Status;
@@ -100,7 +101,7 @@ export type FullTimeEmployeeInput = {
 export type FullTimeEmployeeType = IEmployee & {
   __typename?: 'FullTimeEmployeeType';
   department?: Maybe<Department>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   salary: Scalars['Decimal']['output'];
   status?: Maybe<Status>;
@@ -109,7 +110,7 @@ export type FullTimeEmployeeType = IEmployee & {
 
 export type IEmployee = {
   department?: Maybe<Department>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   status?: Maybe<Status>;
 };
@@ -117,7 +118,7 @@ export type IEmployee = {
 export type PartTimeEmployeeInput = {
   department: Department;
   hourlyRate?: InputMaybe<Scalars['Float']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['Guid']['input']>;
   name: Scalars['String']['input'];
   status: Status;
   type: Type;
@@ -127,7 +128,7 @@ export type PartTimeEmployeeType = IEmployee & {
   __typename?: 'PartTimeEmployeeType';
   department?: Maybe<Department>;
   hourlyRate: Scalars['Decimal']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   status?: Maybe<Status>;
   type: EmployeeTypeEnum;
@@ -149,16 +150,16 @@ export type AddEmployeeMutationVariables = Exact<{
 }>;
 
 
-export type AddEmployeeMutation = { __typename?: 'EmployeeMutation', addEmployee?: { __typename?: 'FullTimeEmployeeType', id: number, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: number, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
+export type AddEmployeeMutation = { __typename?: 'EmployeeMutation', addEmployee?: { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
 
 export type GetEmployeesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEmployeesQuery = { __typename?: 'EmployeeQuery', employees?: Array<{ __typename: 'FullTimeEmployeeType', id: number, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename: 'PartTimeEmployeeType', id: number, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null> | null };
+export type GetEmployeesQuery = { __typename?: 'EmployeeQuery', employees?: Array<{ __typename: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null> | null };
 
-type EmployeeDetails_FullTimeEmployeeType_Fragment = { __typename?: 'FullTimeEmployeeType', id: number, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum };
+type EmployeeDetails_FullTimeEmployeeType_Fragment = { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum };
 
-type EmployeeDetails_PartTimeEmployeeType_Fragment = { __typename?: 'PartTimeEmployeeType', id: number, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum };
+type EmployeeDetails_PartTimeEmployeeType_Fragment = { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum };
 
 export type EmployeeDetailsFragment = EmployeeDetails_FullTimeEmployeeType_Fragment | EmployeeDetails_PartTimeEmployeeType_Fragment;
 
@@ -191,23 +192,10 @@ export const EmployeeDetailsFragmentDoc = gql`
 export const AddEmployeeDocument = gql`
     mutation AddEmployee($create: EmployeeInput!) {
   addEmployee(create: $create) {
-    ... on IEmployee {
-      id
-      name
-      department
-      status
-    }
-    ... on FullTimeEmployeeType {
-      salary
-      type
-    }
-    ... on PartTimeEmployeeType {
-      hourlyRate
-      type
-    }
+    ...EmployeeDetails
   }
 }
-    `;
+    ${EmployeeDetailsFragmentDoc}`;
 export type AddEmployeeMutationFn = Apollo.MutationFunction<AddEmployeeMutation, AddEmployeeMutationVariables>;
 
 /**
