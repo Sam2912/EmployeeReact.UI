@@ -1,46 +1,75 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, Layout, Menu } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import { EmployeeProvider } from "../context/EmployeeContext";
 import { useAuth } from "../context/AuthContext";
 import AppRoutes from "./AppRoutes";
+import { ItemType, MenuItemType } from "antd/es/menu/hooks/useItems";
 import { LogoutOutlined } from "@ant-design/icons";
 
 const { Header, Content, Footer } = Layout;
 
 const AppLayout = () => {
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const location = useLocation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   useEffect(() => {
     const path = location.pathname;
-    const key = path === "/" ? "1" : path === "/employees/create" ? "2" : "";
-    //setSelectedKeys([key]);
+    let key = "";
+    switch (path) {
+      case "/employees":
+        key = "1";
+        break;
+      case "/employees/create":
+        key = "2";
+        break;
+      default:
+        key = "";
+        break;
+    }
+    
+    setSelectedKeys([key]);
   }, [location.pathname]);
 
+  const menuItems: ItemType<MenuItemType>[] = [
+    {
+      key: "1",
+      label: (
+        <NavLink to="/employees" className="nav-link">
+          Employee List
+        </NavLink>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <NavLink to="/employees/create" className="nav-link">
+          Create Employee
+        </NavLink>
+      ),
+    },
+    {
+      key: "3",
+      label: isAuthenticated && (
+        <Button onClick={logout} type="link" icon={<LogoutOutlined />}>
+          Logout
+        </Button>
+      ),
+      style: { marginLeft: "auto" },
+    },
+  ];
   return (
     <EmployeeProvider>
       <Layout className="layout" style={{ minHeight: "100vh" }}>
         <Header>
           <div className="logo" />
-          <Menu theme="dark" mode="horizontal" selectedKeys={selectedKeys}>
-            <Menu.Item key="1">
-              <NavLink to="/employees" className="nav-link">
-                Employee List
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <NavLink to="/employees/create" className="nav-link">
-                Create Employee
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key="3" style={{ marginLeft: "auto" }}> 
-              <Button onClick={logout} type="link" icon={<LogoutOutlined />}>
-                Logout
-              </Button>
-            </Menu.Item>
-          </Menu>
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            selectedKeys={selectedKeys}
+            items={menuItems}
+          ></Menu>
         </Header>
         <Content
           style={{ padding: "0 50px", flex: "1 0 auto", marginBottom: "60px" }}

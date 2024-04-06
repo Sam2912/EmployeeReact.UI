@@ -1,6 +1,7 @@
 // AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { TOKEN } from '../constants/constant';
+import { useGlobalErrorHandler } from './GlobalErrorHandlerContext';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -24,7 +25,8 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
+  const { clearGlobalError } = useGlobalErrorHandler();
+  
   useEffect(() => {
     // Check if the user is authenticated (e.g., from localStorage, cookies, etc.)
     const storedToken = localStorage.getItem(TOKEN);
@@ -44,6 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Perform logout logic (e.g., clear localStorage, reset state)
     setIsAuthenticated(false);
     localStorage.removeItem(TOKEN);
+    clearGlobalError(); // Clear the global error state on logout
   };
 
   return (

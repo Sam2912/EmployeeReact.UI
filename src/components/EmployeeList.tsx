@@ -8,7 +8,7 @@ import { useGlobalErrorHandler } from "../context/GlobalErrorHandlerContext";
 
 function EmployeeList() {
   const navigate = useNavigate();
-  const { selectEmployee } = useEmployeeContext(); // Access the selectEmployee function from context
+  const { selectEmployee } = useEmployeeContext();
   const { globalError, handleError } = useGlobalErrorHandler();
 
   const { loading, error, data } = useGetEmployeesQuery({
@@ -41,6 +41,7 @@ function EmployeeList() {
       {loading ? (
         <h1>loading...</h1>
       ) : (
+        !globalError &&
         data?.employees?.map(
           (employee, index) =>
             employee != null && (

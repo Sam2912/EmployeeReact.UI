@@ -31,7 +31,6 @@ function EmployeeEditor() {
     (data: AddEmployeeMutationFn["addEmployee"]): void => {
       message.success("Employee saved successfully!");
       form.resetFields();
-      console.log(data);
       navigate(`/employees`);
     };
 

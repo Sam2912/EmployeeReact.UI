@@ -1,6 +1,6 @@
 import { ApolloError } from "@apollo/client";
 import { message } from "antd";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 
 interface GlobalErrorHandlerProps {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ interface GlobalErrorHandlerProps {
 interface GlobalErrorHandlerContextType {
   globalError: string | null;
   handleError: (error: Error) => void;
+  clearGlobalError: () => void;
 }
 
 const GlobalErrorHandlerContext =
@@ -30,7 +31,7 @@ export const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProps> = ({
 }) => {
   const [globalError, setGlobalError] = useState<string | null>(null);
 
-  const handleError = (error: Error) => {
+  const handleError = useCallback((error: Error) => {
     const genericError = "An error occurred while processing your request.";
 
     if (error instanceof ApolloError) {
@@ -60,10 +61,16 @@ export const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProps> = ({
       // Handle other errors as needed
       setGlobalError(genericError);
     }
+  }, []);
+
+  const clearGlobalError = () => {
+    setGlobalError(null); // Clear the global error state
   };
 
   return (
-    <GlobalErrorHandlerContext.Provider value={{ globalError, handleError }}>
+    <GlobalErrorHandlerContext.Provider
+      value={{ globalError, handleError, clearGlobalError }}
+    >
       {children}
     </GlobalErrorHandlerContext.Provider>
   );
