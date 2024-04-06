@@ -1,5 +1,6 @@
 // AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { TOKEN } from '../constants/constant';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -26,7 +27,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Check if the user is authenticated (e.g., from localStorage, cookies, etc.)
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem(TOKEN);
     if (storedToken) {
       setIsAuthenticated(true);
     }
@@ -36,13 +37,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Perform authentication logic (e.g., API call, validation)
     // For simplicity, we'll just set isAuthenticated to true and store a token in localStorage
     setIsAuthenticated(true);
-    localStorage.setItem('token', token);
+    localStorage.setItem(TOKEN, token);
   };
 
   const logout = () => {
     // Perform logout logic (e.g., clear localStorage, reset state)
     setIsAuthenticated(false);
-    localStorage.removeItem('token');
+    localStorage.removeItem(TOKEN);
   };
 
   return (

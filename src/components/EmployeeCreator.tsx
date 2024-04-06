@@ -14,11 +14,13 @@ import EmployeeForm from "./EmployeeForm";
 import { v4 } from "uuid";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useGlobalErrorHandler } from "../context/GlobalErrorHandlerContext";
 
 interface EmployeeCreatorProps {}
 
 const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
   const navigate = useNavigate();
+  const { globalError, handleError } = useGlobalErrorHandler();
   const [addEmployeeMutation, { data, loading, error }] =
     useAddEmployeeMutation();
 
@@ -31,21 +33,21 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
       navigate(`/employees`);
     };
 
-  const handleError =
-    (form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>) =>
-    (
-      error: any // You can use a more specific type for error handling
-    ): void => {
-      // Display GraphQL errors
-      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-        const errorMessages = error.graphQLErrors.map(
-          (graphQLError: any) => graphQLError.message
-        );
-        message.error(`GraphQL Error: ${errorMessages.join(", ")}`);
-      } else {
-        message.error("An error occurred while saving the employee.");
-      }
-    };
+  // const handleError =
+  //   (form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>) =>
+  //   (
+  //     error: any // You can use a more specific type for error handling
+  //   ): void => {
+  //     // Display GraphQL errors
+  //     if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+  //       const errorMessages = error.graphQLErrors.map(
+  //         (graphQLError: any) => graphQLError.message
+  //       );
+  //       message.error(`GraphQL Error: ${errorMessages.join(", ")}`);
+  //     } else {
+  //       message.error("An error occurred while saving the employee.");
+  //     }
+  //   };
 
   const onFinish = (
     form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>,
@@ -68,7 +70,7 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
             },
           },
           onCompleted: handleCompleted(form),
-          onError: handleError(form),
+          //onError: handleError(form),
         });
         break;
       case EmployeeTypeEnum.PartTime:
@@ -86,7 +88,7 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
             },
           },
           onCompleted: handleCompleted(form),
-          onError: handleError(form),
+          //onError: handleError(form),
         });
         break;
       default:
@@ -94,8 +96,16 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
     }
   };
 
+  // Handle error only once when it occurs
+  React.useEffect(() => {
+    if (error) {
+      handleError(error);
+    }
+  }, [error, handleError]);
+
   return (
     <>
+      {globalError && <p>{globalError}</p>}
       <EmployeeForm onFinish={onFinish}></EmployeeForm>
     </>
   );

@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import graphqlSchema from '../constants';
+import { TOKEN } from './constants/constant';
 
 // Create an http link
 const httpLink = createHttpLink({
@@ -10,7 +11,7 @@ const httpLink = createHttpLink({
 // Create a middleware link to set the token in the request headers
 const authLink = setContext((_, { headers }) => {
   // Get the token from your authentication method (e.g., localStorage)
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem(TOKEN);
   
   // Return the headers to the context so httpLink can read them
   return {

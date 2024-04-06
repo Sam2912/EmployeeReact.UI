@@ -12,11 +12,14 @@ import {
   useUpdateEmployeeMutation,
 } from "../gql/apolloGenerated";
 import EmployeeForm from "./EmployeeForm";
+import React from "react";
+import { useGlobalErrorHandler } from "../context/GlobalErrorHandlerContext";
 
 function EmployeeEditor() {
   // const { id } = useParams();
   const { selectedEmployee } = useEmployeeContext();
   const navigate = useNavigate();
+  const { globalError, handleError } = useGlobalErrorHandler();
   const [updateEmployeeMutation, { data, loading, error }] =
     useUpdateEmployeeMutation();
   const [
@@ -32,21 +35,21 @@ function EmployeeEditor() {
       navigate(`/employees`);
     };
 
-  const handleError =
-    (form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>) =>
-    (
-      error: any // You can use a more specific type for error handling
-    ): void => {
-      // Display GraphQL errors
-      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-        const errorMessages = error.graphQLErrors.map(
-          (graphQLError: any) => graphQLError.message
-        );
-        message.error(`GraphQL Error: ${errorMessages.join(", ")}`);
-      } else {
-        message.error("An error occurred while saving the employee.");
-      }
-    };
+  // const handleError =
+  //   (form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>) =>
+  //   (
+  //     error: any // You can use a more specific type for error handling
+  //   ): void => {
+  //     // Display GraphQL errors
+  //     if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+  //       const errorMessages = error.graphQLErrors.map(
+  //         (graphQLError: any) => graphQLError.message
+  //       );
+  //       message.error(`GraphQL Error: ${errorMessages.join(", ")}`);
+  //     } else {
+  //       message.error("An error occurred while saving the employee.");
+  //     }
+  //   };
 
   const onFinish = (
     form: FormInstance<FullTimeEmployeeType | PartTimeEmployeeType>,
@@ -68,7 +71,7 @@ function EmployeeEditor() {
             },
           },
           onCompleted: handleCompleted(form),
-          onError: handleError(form),
+          //onError: handleError(form),
         });
         break;
       case EmployeeTypeEnum.PartTime:
@@ -86,7 +89,7 @@ function EmployeeEditor() {
             },
           },
           onCompleted: handleCompleted(form),
-          onError: handleError(form),
+          //onError: handleError(form),
         });
         break;
       default:
@@ -108,8 +111,16 @@ function EmployeeEditor() {
     });
   };
 
+    // Handle error only once when it occurs
+    React.useEffect(() => {
+      if (error) {
+        handleError(error);
+      }
+    }, [error, handleError]);
+    
   return (
     <>
+    {globalError && <p>{globalError}</p>}
       {selectedEmployee && (
         <EmployeeForm
           initialValues={selectedEmployee}

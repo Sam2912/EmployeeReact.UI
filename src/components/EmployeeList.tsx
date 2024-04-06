@@ -4,10 +4,13 @@ import EmployeeCard from "./EmployeeCard";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useEmployeeContext } from "../context/EmployeeContext";
+import { useGlobalErrorHandler } from "../context/GlobalErrorHandlerContext";
 
 function EmployeeList() {
   const navigate = useNavigate();
   const { selectEmployee } = useEmployeeContext(); // Access the selectEmployee function from context
+  const { globalError, handleError } = useGlobalErrorHandler();
+
   const { loading, error, data } = useGetEmployeesQuery({
     fetchPolicy: "cache-and-network",
   });
@@ -25,12 +28,16 @@ function EmployeeList() {
     }
   };
 
-  if (error) {
-    message.error("Error while fetching the data");
-  }
+  // Handle error only once when it occurs
+  React.useEffect(() => {
+    if (error) {
+      handleError(error);
+    }
+  }, [error, handleError]);
 
   return (
     <>
+      {globalError && <p>{globalError}</p>}
       {loading ? (
         <h1>loading...</h1>
       ) : (

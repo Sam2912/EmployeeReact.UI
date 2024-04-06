@@ -62,7 +62,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
     <Form
       form={form}
       name="employee_form"
-      initialValues={initialValues}
+      initialValues={{ ...initialValues, type: undefined }}
       onFinish={handleSubmit}
       onFinishFailed={onFinishFailed}
       layout="vertical"
@@ -95,7 +95,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       <Form.Item
         label="Name"
         name="name"
-        rules={[{ required: true, message: "Please enter the employee name!" }]}
+         rules={[{ required: true, message: "Please enter the employee name!" }]}
         className="mb-4"
       >
         <Input className="w-full" />
