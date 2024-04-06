@@ -28,7 +28,7 @@ const EmployeeCreator: React.FC<EmployeeCreatorProps> = () => {
       message.success("Employee saved successfully!");
       form.resetFields();
       console.log(data);
-      navigate(`/`);
+      navigate(`/employees`);
     };
 
   const handleError =

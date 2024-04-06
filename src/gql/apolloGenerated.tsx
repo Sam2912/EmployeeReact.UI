@@ -19,6 +19,25 @@ export type Scalars = {
   Guid: { input: any; output: any; }
 };
 
+export type ApplicationUserType = {
+  __typename?: 'ApplicationUserType';
+  email: Scalars['String']['output'];
+  userName: Scalars['String']['output'];
+};
+
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  errors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  token?: Maybe<Scalars['String']['output']>;
+};
+
+export type CreateUserInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  userName: Scalars['String']['input'];
+};
+
 export enum Department {
   Hr = 'HR',
   It = 'IT',
@@ -38,34 +57,13 @@ export type EmployeeInput = {
   partTimeEmployeeInput?: InputMaybe<PartTimeEmployeeInput>;
 };
 
-export type EmployeeMutation = {
-  __typename?: 'EmployeeMutation';
-  addEmployee?: Maybe<IEmployee>;
-  deleteEmployee?: Maybe<IEmployee>;
-  updateEmployee?: Maybe<IEmployee>;
-};
-
-
-export type EmployeeMutationAddEmployeeArgs = {
-  create: EmployeeInput;
-};
-
-
-export type EmployeeMutationDeleteEmployeeArgs = {
-  delete: EmployeeDeleteInput;
-};
-
-
-export type EmployeeMutationUpdateEmployeeArgs = {
-  update: EmployeeUpdateInput;
-};
-
 export type EmployeeQuery = {
   __typename?: 'EmployeeQuery';
   employee?: Maybe<Employee>;
   employees?: Maybe<Array<Maybe<Employee>>>;
   employeesWithInterface?: Maybe<Array<Maybe<IEmployee>>>;
   filteredEmployee?: Maybe<Array<Maybe<Employee>>>;
+  generateJwtToken?: Maybe<AuthPayload>;
 };
 
 
@@ -77,6 +75,12 @@ export type EmployeeQueryEmployeeArgs = {
 export type EmployeeQueryFilteredEmployeeArgs = {
   dept?: InputMaybe<Department>;
   status?: InputMaybe<Status>;
+};
+
+
+export type EmployeeQueryGenerateJwtTokenArgs = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 export enum EmployeeTypeEnum {
@@ -115,6 +119,47 @@ export type IEmployee = {
   status?: Maybe<Status>;
 };
 
+export type Mutations = {
+  __typename?: 'Mutations';
+  addEmployee?: Maybe<IEmployee>;
+  assignRolesToUser?: Maybe<Scalars['Boolean']['output']>;
+  createRole?: Maybe<RoleType>;
+  createUser?: Maybe<ApplicationUserType>;
+  deleteEmployee?: Maybe<IEmployee>;
+  updateEmployee?: Maybe<IEmployee>;
+};
+
+
+export type MutationsAddEmployeeArgs = {
+  create: EmployeeInput;
+};
+
+
+export type MutationsAssignRolesToUserArgs = {
+  roles: Array<InputMaybe<Scalars['String']['input']>>;
+  userId: Scalars['String']['input'];
+};
+
+
+export type MutationsCreateRoleArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationsCreateUserArgs = {
+  input?: InputMaybe<CreateUserInput>;
+};
+
+
+export type MutationsDeleteEmployeeArgs = {
+  delete: EmployeeDeleteInput;
+};
+
+
+export type MutationsUpdateEmployeeArgs = {
+  update: EmployeeUpdateInput;
+};
+
 export type PartTimeEmployeeInput = {
   department: Department;
   hourlyRate?: InputMaybe<Scalars['Float']['input']>;
@@ -134,6 +179,14 @@ export type PartTimeEmployeeType = IEmployee & {
   type: EmployeeTypeEnum;
 };
 
+export type RoleType = {
+  __typename?: 'RoleType';
+  /** The ID of the role. */
+  id?: Maybe<Scalars['ID']['output']>;
+  /** The name of the role. */
+  name: Scalars['String']['output'];
+};
+
 /** Employee status */
 export enum Status {
   Active = 'ACTIVE',
@@ -145,26 +198,34 @@ export enum Type {
   PartTime = 'PART_TIME'
 }
 
+export type GenerateJwtTokenQueryVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type GenerateJwtTokenQuery = { __typename?: 'EmployeeQuery', generateJwtToken?: { __typename?: 'AuthPayload', token?: string | null, success?: boolean | null, errors?: Array<string | null> | null } | null };
+
 export type AddEmployeeMutationVariables = Exact<{
   create: EmployeeInput;
 }>;
 
 
-export type AddEmployeeMutation = { __typename?: 'EmployeeMutation', addEmployee?: { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
+export type AddEmployeeMutation = { __typename?: 'Mutations', addEmployee?: { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
 
 export type UpdateEmployeeMutationVariables = Exact<{
   update: EmployeeUpdateInput;
 }>;
 
 
-export type UpdateEmployeeMutation = { __typename?: 'EmployeeMutation', updateEmployee?: { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
+export type UpdateEmployeeMutation = { __typename?: 'Mutations', updateEmployee?: { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
 
 export type DeleteEmployeeMutationVariables = Exact<{
   delete: EmployeeDeleteInput;
 }>;
 
 
-export type DeleteEmployeeMutation = { __typename?: 'EmployeeMutation', deleteEmployee?: { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
+export type DeleteEmployeeMutation = { __typename?: 'Mutations', deleteEmployee?: { __typename?: 'FullTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, salary: any, type: EmployeeTypeEnum } | { __typename?: 'PartTimeEmployeeType', id: string, name: string, department?: Department | null, status?: Status | null, hourlyRate: any, type: EmployeeTypeEnum } | null };
 
 export type GetEmployeesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -203,6 +264,49 @@ export const EmployeeDetailsFragmentDoc = gql`
   }
 }
     `;
+export const GenerateJwtTokenDocument = gql`
+    query GenerateJwtToken($username: String!, $password: String!) {
+  generateJwtToken(username: $username, password: $password) {
+    token
+    success
+    errors
+  }
+}
+    `;
+
+/**
+ * __useGenerateJwtTokenQuery__
+ *
+ * To run a query within a React component, call `useGenerateJwtTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateJwtTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateJwtTokenQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useGenerateJwtTokenQuery(baseOptions: Apollo.QueryHookOptions<GenerateJwtTokenQuery, GenerateJwtTokenQueryVariables> & ({ variables: GenerateJwtTokenQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GenerateJwtTokenQuery, GenerateJwtTokenQueryVariables>(GenerateJwtTokenDocument, options);
+      }
+export function useGenerateJwtTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GenerateJwtTokenQuery, GenerateJwtTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GenerateJwtTokenQuery, GenerateJwtTokenQueryVariables>(GenerateJwtTokenDocument, options);
+        }
+export function useGenerateJwtTokenSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GenerateJwtTokenQuery, GenerateJwtTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GenerateJwtTokenQuery, GenerateJwtTokenQueryVariables>(GenerateJwtTokenDocument, options);
+        }
+export type GenerateJwtTokenQueryHookResult = ReturnType<typeof useGenerateJwtTokenQuery>;
+export type GenerateJwtTokenLazyQueryHookResult = ReturnType<typeof useGenerateJwtTokenLazyQuery>;
+export type GenerateJwtTokenSuspenseQueryHookResult = ReturnType<typeof useGenerateJwtTokenSuspenseQuery>;
+export type GenerateJwtTokenQueryResult = Apollo.QueryResult<GenerateJwtTokenQuery, GenerateJwtTokenQueryVariables>;
 export const AddEmployeeDocument = gql`
     mutation AddEmployee($create: EmployeeInput!) {
   addEmployee(create: $create) {

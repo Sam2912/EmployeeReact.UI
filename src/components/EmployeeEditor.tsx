@@ -29,7 +29,7 @@ function EmployeeEditor() {
       message.success("Employee saved successfully!");
       form.resetFields();
       console.log(data);
-      navigate(`/`);
+      navigate(`/employees`);
     };
 
   const handleError =
@@ -103,7 +103,7 @@ function EmployeeEditor() {
       },
       onCompleted: () => {
         message.success("Employee deleted successfully!");
-        navigate(`/`);
+        navigate(`/employees`);
       },
     });
   };

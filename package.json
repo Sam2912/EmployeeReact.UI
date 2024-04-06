@@ -11,6 +11,7 @@
     "codegen": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.ts"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.3.6",
     "@apollo/client": "^3.9.9",
     "antd": "^5.15.4",
     "graphql": "^16.8.1",

@@ -1,21 +1,22 @@
-import { useState, useEffect } from "react";
-import { Layout, Menu } from "antd";
-import { Routes, Route, NavLink, useLocation } from "react-router-dom";
-import EmployeeList from "./EmployeeList";
-import EmployeeCreator from "./EmployeeCreator";
-import EmployeeEditor from "./EmployeeEditor";
+import React, { useState, useEffect } from "react";
+import { Button, Layout, Menu } from "antd";
+import { NavLink, useLocation } from "react-router-dom";
 import { EmployeeProvider } from "../context/EmployeeContext";
+import { useAuth } from "../context/AuthContext";
+import AppRoutes from "./AppRoutes";
+import { LogoutOutlined } from "@ant-design/icons";
 
 const { Header, Content, Footer } = Layout;
 
 const AppLayout = () => {
+  const { isAuthenticated, login, logout } = useAuth();
   const location = useLocation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   useEffect(() => {
     const path = location.pathname;
     const key = path === "/" ? "1" : path === "/employees/create" ? "2" : "";
-    setSelectedKeys([key]);
+    //setSelectedKeys([key]);
   }, [location.pathname]);
 
   return (
@@ -25,7 +26,7 @@ const AppLayout = () => {
           <div className="logo" />
           <Menu theme="dark" mode="horizontal" selectedKeys={selectedKeys}>
             <Menu.Item key="1">
-              <NavLink to="/" className="nav-link">
+              <NavLink to="/employees" className="nav-link">
                 Employee List
               </NavLink>
             </Menu.Item>
@@ -33,6 +34,11 @@ const AppLayout = () => {
               <NavLink to="/employees/create" className="nav-link">
                 Create Employee
               </NavLink>
+            </Menu.Item>
+            <Menu.Item key="3" style={{ marginLeft: "auto" }}> 
+              <Button onClick={logout} type="link" icon={<LogoutOutlined />}>
+                Logout
+              </Button>
             </Menu.Item>
           </Menu>
         </Header>
@@ -43,14 +49,7 @@ const AppLayout = () => {
             className="site-layout-content"
             style={{ minHeight: "calc(100vh - 160px)" }}
           >
-            <Routes>
-              <Route path="/" element={<EmployeeList />} />
-              <Route path="/employees/create" element={<EmployeeCreator />} />
-              <Route
-                path="/employees/:id/update"
-                element={<EmployeeEditor />}
-              />
-            </Routes>
+            <AppRoutes />
           </div>
         </Content>
         <Footer
