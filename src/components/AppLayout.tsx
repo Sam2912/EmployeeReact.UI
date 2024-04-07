@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+// AppLayout.tsx
+import React, { useEffect, useState } from "react";
 import { Button, Layout, Menu } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import { EmployeeProvider } from "../context/EmployeeContext";
@@ -18,23 +19,34 @@ const AppLayout = () => {
     const path = location.pathname;
     let key = "";
     switch (path) {
-      case "/employees":
+      case "/landing": // Add case for landing page
         key = "1";
         break;
-      case "/employees/create":
+      case "/employees":
         key = "2";
+        break;
+      case "/employees/create":
+        key = "3";
         break;
       default:
         key = "";
         break;
     }
-    
+
     setSelectedKeys([key]);
   }, [location.pathname]);
 
   const menuItems: ItemType<MenuItemType>[] = [
     {
-      key: "1",
+      key: "1", // Key for Landing page
+      label: (
+        <NavLink to="/" className="nav-link">
+          Home
+        </NavLink>
+      ),
+    },
+    {
+      key: "2",
       label: (
         <NavLink to="/employees" className="nav-link">
           Employee List
@@ -42,7 +54,7 @@ const AppLayout = () => {
       ),
     },
     {
-      key: "2",
+      key: "3",
       label: (
         <NavLink to="/employees/create" className="nav-link">
           Create Employee
@@ -50,7 +62,7 @@ const AppLayout = () => {
       ),
     },
     {
-      key: "3",
+      key: "4", // Key for Logout button
       label: isAuthenticated && (
         <Button onClick={logout} type="link" icon={<LogoutOutlined />}>
           Logout
@@ -59,6 +71,7 @@ const AppLayout = () => {
       style: { marginLeft: "auto" },
     },
   ];
+
   return (
     <EmployeeProvider>
       <Layout className="layout" style={{ minHeight: "100vh" }}>

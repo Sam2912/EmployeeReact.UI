@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import EmployeeList from "./EmployeeList";
@@ -11,35 +10,55 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginForm />} />
-      <Route path="/" element={<ProtectedRoute element={<Landing />} />} />
-      {/* <Route
-        path="/employees"
-        element={<ProtectedRoute element={<EmployeeList />} />}
-      />
       <Route
-        path="/employees/create"
-        element={<ProtectedRoute element={<EmployeeCreator />} />}
+        path="/"
+        element={
+          <ProtectedRoute
+            allowedRoles={["Admin", "IT"]}
+            element={<Landing />}
+          />
+        }
       />
-      <Route
-        path="/employees/:id/update"
-        element={<ProtectedRoute element={<EmployeeEditor />} />}
-      /> */}
       <Route
         path="/employees"
         element={
           <ProtectedRoute
             element={
               <>
-                <Outlet />{" "}
+                <Outlet />
                 {/* This is where nested components will be rendered */}
               </>
             }
           />
         }
       >
-        <Route index element={<EmployeeList />} />
-        <Route path="create" element={<EmployeeCreator />} />
-        <Route path=":id/update" element={<EmployeeEditor />} />
+        <Route
+          index
+          element={
+            <ProtectedRoute
+              allowedRoles={["Admin", "IT"]}
+              element={<EmployeeList />}
+            />
+          }
+        />
+        <Route
+          path="create"
+          element={
+            <ProtectedRoute
+              allowedRoles={["Admin"]}
+              element={<EmployeeCreator />}
+            />
+          }
+        />
+        <Route
+          path=":id/update"
+          element={
+            <ProtectedRoute
+              allowedRoles={["Admin"]}
+              element={<EmployeeEditor />}
+            />
+          }
+        />
       </Route>
     </Routes>
   );

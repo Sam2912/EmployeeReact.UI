@@ -13,7 +13,9 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   const { isAuthenticated, login, logout } = useAuth();
   
   const [generateJwtToken, { loading, error, data }] =
-    useGenerateJwtTokenLazyQuery();
+    useGenerateJwtTokenLazyQuery({
+      fetchPolicy:'network-only'
+    });
 
   const handleFinish = (values: any): void => {
     form

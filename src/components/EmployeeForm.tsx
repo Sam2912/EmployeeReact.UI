@@ -74,7 +74,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       <Form.Item
         label="Employee Type"
         name="type"
-        initialValue={EmployeeTypeEnum.FullTime}
+        initialValue={
+          initialValues?.type ? initialValues?.type : EmployeeTypeEnum.FullTime
+        }
         rules={[
           { required: true, message: "Please select the employee type!" },
         ]}
@@ -95,7 +97,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       <Form.Item
         label="Name"
         name="name"
-         rules={[{ required: true, message: "Please enter the employee name!" }]}
+        rules={[{ required: true, message: "Please enter the employee name!" }]}
         className="mb-4"
       >
         <Input className="w-full" />
